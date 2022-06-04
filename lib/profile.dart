@@ -42,7 +42,7 @@ class Profile{
 
   String get_taille()
   {
-    return '$taille cm';
+    return '${taille.toInt()} cm';
   }
 
   String get_hoobies(){
