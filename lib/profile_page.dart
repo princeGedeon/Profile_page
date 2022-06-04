@@ -10,6 +10,7 @@ class ProfilePageState extends State<ProfilePage> {
   late TextEditingController nom;
   late TextEditingController prenom;
   late TextEditingController secret;
+  late TextEditingController age;
   bool showsecret=false;
   Map<String,bool> hoobies={
     "Mangas":false,
@@ -23,6 +24,8 @@ class ProfilePageState extends State<ProfilePage> {
     nom=TextEditingController();
     prenom=TextEditingController();
     secret=TextEditingController();
+    age=TextEditingController();
+    age.text=myprofile.age.toString();
     nom.text=myprofile.nom;
     prenom.text=myprofile.prenom;
     secret.text=myprofile.secret;
@@ -33,6 +36,7 @@ class ProfilePageState extends State<ProfilePage> {
     nom.dispose();
     prenom.dispose();
     secret.dispose();
+    age.dispose();
     super.dispose();
   }
 
@@ -73,6 +77,7 @@ class ProfilePageState extends State<ProfilePage> {
             myTextField(controller: nom, hint: "Entrez votre nom"),
             myTextField(controller: prenom, hint: "Entrez votre prénom"),
             myTextField(controller: secret, hint: "Dites nous un secret",isSecret: true),
+            myTextField(controller: age, hint: "Entrez votre age",type: TextInputType.number),
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,7 +115,7 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  TextField myTextField({required TextEditingController controller,required String hint,bool isSecret=false})
+  TextField myTextField({required TextEditingController controller,required String hint,bool isSecret=false,TextInputType type=TextInputType.text})
   {
     return TextField(
       controller: controller,
@@ -118,6 +123,7 @@ class ProfilePageState extends State<ProfilePage> {
         hintText: hint,
 
       ),
+      keyboardType: type,
       obscureText: isSecret,
       onSubmitted: ((newValue){
         updateUser();
@@ -132,6 +138,11 @@ class ProfilePageState extends State<ProfilePage> {
         nom:(nom.text!=myprofile.nom)?nom.text:myprofile.nom,
         prenom:(prenom.text!=myprofile.prenom)?prenom.text:myprofile.prenom,
         secret: (secret.text!=myprofile.secret)?secret.text:myprofile.secret,
+        favoriteLang: myprofile.favoriteLang,
+        hobbies: myprofile.hobbies,
+        taille: myprofile.taille,
+        age: int.parse(age.text),
+        gender: myprofile.gender
       );
     });
   }
