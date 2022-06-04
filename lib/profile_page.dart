@@ -10,6 +10,7 @@ class ProfilePageState extends State<ProfilePage> {
   late TextEditingController nom;
   late TextEditingController prenom;
   late TextEditingController secret;
+  bool showsecret=false;
 
   @override
   void initState() {
@@ -17,6 +18,9 @@ class ProfilePageState extends State<ProfilePage> {
     nom=TextEditingController();
     prenom=TextEditingController();
     secret=TextEditingController();
+    nom.text=myprofile.nom;
+    prenom.text=myprofile.prenom;
+    secret.text=myprofile.secret;
   }
 
   @override
@@ -53,12 +57,33 @@ class ProfilePageState extends State<ProfilePage> {
                   Text("Taille : ${myprofile.get_taille()}"),
                   Text('Genre : ${myprofile.get_gender()}'),
                   Text("Hobbies : ${myprofile.get_hoobies()}"),
-                  Text("Language de programmation favori : ${myprofile.get_favoriteLang()}")
+                  Text("Language de programmation favori : ${myprofile.get_favoriteLang()}"),
+                  ElevatedButton(onPressed:updateSecret, child: Text((showsecret)?"Cacher secret":"Montrer secret")),
+                  (showsecret)?Text(myprofile.secret):Container(height: 0,width: 0,)
                 ],
               ),
             )),
             Divider(color: Colors.deepPurpleAccent,thickness: 2),
-            Text("Modifier les infos ",style: TextStyle(),),
+            const Text("Modifier les infos ",style: TextStyle(
+              color: Colors.deepPurple,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),),
+            myTextField(controller: nom, hint: "Entrez votre nom"),
+            myTextField(controller: prenom, hint: "Entrez votre prénom"),
+            myTextField(controller: secret, hint: "Dites nous un secret",isSecret: true),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Genre : ${myprofile.get_gender()}"),
+                Switch(value: myprofile.gender, onChanged: ((newBool){
+                  setState((){
+                    myprofile.gender=newBool;
+                  });
+                }))
+              ],
+            )
           ],
         ),
       ),
@@ -74,6 +99,27 @@ class ProfilePageState extends State<ProfilePage> {
 
       ),
       obscureText: isSecret,
+      onSubmitted: ((newValue){
+        updateUser();
+
+      }),
     );
+  }
+
+  void updateUser(){
+    setState((){
+      myprofile=Profile(
+        nom:(nom.text!=myprofile.nom)?nom.text:myprofile.nom,
+        prenom:(prenom.text!=myprofile.prenom)?prenom.text:myprofile.prenom,
+        secret: (secret.text!=myprofile.secret)?secret.text:myprofile.secret,
+      );
+    });
+  }
+
+  updateSecret()
+  {
+    setState((){
+      showsecret=!showsecret;
+    });
   }
 }
