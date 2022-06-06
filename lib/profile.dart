@@ -20,6 +20,7 @@ class Profile{
     this.favoriteLang="Python"
 });
 
+
   String get_fullname()
   {
     return "$nom  $prenom";
@@ -63,5 +64,7 @@ class Profile{
   String get_favoriteLang(){
     return favoriteLang;
   }
+
+
 
 }

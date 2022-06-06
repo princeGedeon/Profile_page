@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mon_profile/profile.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -18,6 +21,11 @@ class ProfilePageState extends State<ProfilePage> {
     "Football":false,
     "Séries":false
   };
+  ImagePicker picker=ImagePicker();
+  File? imgFile;
+
+
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +50,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    double imageSize=MediaQuery.of(context).size.width/4;
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -62,9 +71,23 @@ class ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   Text(myprofile.get_fullname()),
-                  Text('Age : ${myprofile.get_age()}'),
-                  Text("Taille : ${myprofile.get_taille()}"),
-                  Text('Genre : ${myprofile.get_gender()}'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width/3.5,
+                        child: (imgFile==null)?Image.asset("images/hammer-471884_1920.jpg",height: imageSize,width: imageSize,):Image.file(imgFile!,height: imageSize,width: imageSize,),
+                      ),
+                      Column(
+                        children: [
+                          Text('Age : ${myprofile.get_age()}'),
+                          Text("Taille : ${myprofile.get_taille()}"),
+                          Text('Genre : ${myprofile.get_gender()}'),
+                        ],
+                      )
+                    ],
+                  ),
+
                   Text("Hobbies : ${myprofile.get_hoobies()}"),
                   Text("Language de programmation favori : ${myprofile.get_favoriteLang()}"),
                   ElevatedButton(onPressed:updateSecret, child: Text((showsecret)?"Cacher secret":"Montrer secret")),
@@ -72,6 +95,14 @@ class ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                IconButton(onPressed:(()=>getImage(source: ImageSource.camera)), icon: Icon(Icons.camera_alt_rounded),color: Colors.deepPurple,),
+                IconButton(onPressed:(()=>getImage(source: ImageSource.gallery)), icon: Icon(Icons.photo_album_outlined),color: Colors.deepPurple),
+              ],
+            ),
             Divider(color: Colors.deepPurpleAccent,thickness: 2),
            myTitle("Modifier les infos"),
             myTextField(controller: nom, hint: "Entrez votre nom"),
@@ -224,5 +255,18 @@ class ProfilePageState extends State<ProfilePage> {
         )
       ],
     );
+  }
+  Future getImage({required ImageSource source}) async{
+    final choosenFile=await picker.getImage(source: source);
+    setState((){
+      if (choosenFile==null)
+        {
+          print("Je n'ai rien ajoute");
+        }
+      else{
+        imgFile=File(choosenFile.path);
+
+      }
+    });
   }
 }
